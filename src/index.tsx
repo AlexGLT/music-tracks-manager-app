@@ -1,7 +1,7 @@
-import React from 'react';
+import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
 
-import App from './App';
+import App from '@app/app';
 
 
 const rootEl = document.getElementById('root');
@@ -10,8 +10,8 @@ if (rootEl) {
 	const root = createRoot(rootEl);
 
 	root.render(
-		<React.StrictMode>
+		<StrictMode>
 			<App/>
-		</React.StrictMode>,
+		</StrictMode>,
 	);
 }

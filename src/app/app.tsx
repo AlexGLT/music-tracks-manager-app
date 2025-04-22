@@ -1,6 +1,8 @@
 import {RouterProvider} from 'react-router-dom';
+import {ChakraProvider, defaultSystem} from '@chakra-ui/react';
 
 import {router} from './router';
+
 import './app.css';
 
 import type {FC} from 'react';
@@ -8,7 +10,9 @@ import type {FC} from 'react';
 
 const App: FC = () => {
 	return (
-		<RouterProvider router={router}/>
+		<ChakraProvider value={defaultSystem}>
+			<RouterProvider router={router}/>
+		</ChakraProvider>
 	);
 };
 
