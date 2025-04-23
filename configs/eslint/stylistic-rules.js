@@ -292,7 +292,7 @@ export const stylisticRules = {
 
 	// https://eslint.style/rules/default/newline-per-chained-call
 	'stylistic/newline-per-chained-call': [SEVERITY.ERROR, {
-		ignoreChainWithDepth: 2,
+		ignoreChainWithDepth: 3,
 	}],
 
 	// https://eslint.style/rules/default/no-confusing-arrow
@@ -367,7 +367,7 @@ export const stylisticRules = {
 	// https://eslint.style/rules/default/object-curly-newline
 	'stylistic/object-curly-newline': [SEVERITY.ERROR, {
 		multiline: true,
-		minProperties: 3,
+		minProperties: 4,
 		consistent: true,
 	}],
 

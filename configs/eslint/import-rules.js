@@ -65,7 +65,7 @@ export const importRules = {
 	'import-x/no-nodejs-modules': SEVERITY.ERROR,
 
 	// https://github.com/un-ts/eslint-plugin-import-x/blob/master/docs/rules/unambiguous.md
-	'import-x/unambiguous': SEVERITY.ERROR,
+	'import-x/unambiguous': SEVERITY.OFF, // WHY: often gives false-positive results
 
 	// ============================================
 	// STATIC ANALYSIS
@@ -200,7 +200,7 @@ export const importRules = {
 		],
 		pathGroups: [
 			{
-				pattern: '@**/**',
+				pattern: '@*/**',
 				group: 'internal',
 				position: 'after',
 			},
@@ -210,8 +210,13 @@ export const importRules = {
 				position: 'after',
 			},
 		],
+		pathGroupsExcludedImportTypes: ['builtin', 'external'],
+		distinctGroup: true,
 		warnOnUnassignedImports: true,
-		'newlines-between': 'always',
+		sortTypesGroup: true,
+		consolidateIslands: 'inside-groups',
+		'newlines-between': 'always-and-inside-groups',
+		"newlines-between-types": 'never', // should be never, but in this case it will require to remove newline before types
 	}],
 
 	// https://github.com/un-ts/eslint-plugin-import-x/blob/master/docs/rules/prefer-default-export.md

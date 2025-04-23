@@ -1,52 +1,53 @@
 {
-  "compilerOptions": {
-    "lib": ["DOM", "ES2020"],
-    "jsx": "react-jsx",
-    "target": "ES2020",
-    "noEmit": true,
-    "importHelpers": false, // rsbuild uses swc
-    "skipLibCheck": true,
-    "useDefineForClassFields": true,
-	"sourceMap": false,
+	"compilerOptions": {
+		"lib": ["DOM", "ES2020"],
+		"jsx": "react-jsx",
+		"target": "ES2020",
+		"noEmit": true,
+		"importHelpers": false, // rsbuild uses swc
+		"skipLibCheck": true,
+		"useDefineForClassFields": true,
+		"sourceMap": false,
 
-    /* modules */
-    "module": "ESNext",
-    "isolatedModules": true,
-    "resolveJsonModule": true,
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-	"allowSyntheticDefaultImports": true,
-	"allowJs": true,
-	"allowUmdGlobalAccess": false,
-	"emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
+		/* modules */
+		"module": "ESNext",
+		"isolatedModules": true,
+		"resolveJsonModule": true,
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"allowSyntheticDefaultImports": true,
+		"allowJs": true,
+		"allowUmdGlobalAccess": false,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
 
-	"rootDir": "./",
-	"baseUrl": "./",
-	"paths": {
-		"@app/*": ["./src/app/*"],
-		"@entities/*": ["./src/entities/*"],
-		"@features/*": ["./src/features/*"],
-		"@widgets/*": ["./src/widgets/*"],
-		"@pages/*": ["./src/pages/*"],
-		"@shared/*": ["./src/shared/*"]
+		"rootDir": "./",
+		"baseUrl": "./",
+		"paths": {
+			"@app/*": ["./src/app/*"],
+			"@assets/*": ["./src/assets/*"],
+			"@entities/*": ["./src/entities/*"],
+			"@features/*": ["./src/features/*"],
+			"@widgets/*": ["./src/widgets/*"],
+			"@pages/*": ["./src/pages/*"],
+			"@shared/*": ["./src/shared/*"]
+		},
+
+		/* type checking */
+		"strict": true,
+		"noUnusedLocals": false, // use eslint
+		"noUnusedParameters": false, // use eslint
+		"noPropertyAccessFromIndexSignature": false, // use eslint
+		"noUncheckedIndexedAccess": false, // use eslint
+		"allowUnreachableCode": false, // use eslint
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"strictBindCallApply": true,
+		"strictFunctionTypes": true,
+		"strictPropertyInitialization": true,
+		"strictNullChecks": true,
+		"noImplicitReturns": false
 	},
-
-    /* type checking */
-    "strict": true,
-    "noUnusedLocals": false, // use eslint
-    "noUnusedParameters": false, // use eslint
-	"noPropertyAccessFromIndexSignature": false, // use eslint
-	"noUncheckedIndexedAccess": false, // use eslint
-	"allowUnreachableCode": false, // use eslint
-	"noImplicitAny": true,
-	"noImplicitThis": true,
-	"strictBindCallApply": true,
-	"strictFunctionTypes": true,
-	"strictPropertyInitialization": true,
-	"strictNullChecks": true,
-	"noImplicitReturns": false,
-  },
-  "include": ["./src"],
-  "exclude": ["./node_modules"],
+	"include": ["./src"],
+	"exclude": ["./node_modules"],
 }
