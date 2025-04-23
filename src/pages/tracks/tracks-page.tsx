@@ -1,8 +1,10 @@
 import {
 	ButtonGroup,
+	Flex,
 	IconButton,
 	Pagination,
 	Table,
+	Text,
 } from '@chakra-ui/react';
 
 import {HiChevronLeft, HiChevronRight} from 'react-icons/hi';
@@ -44,52 +46,104 @@ const TracksPage: FC = () => {
 	};
 
 	return (
-		<ProgressBox isLoading={isPending} boxProps={{maxWidth: '600px', margin: '0 auto'}}>
-			<Table.Root variant="outline">
-				<Table.Header>
-					<Table.Row>
-						<Table.ColumnHeader>Cover</Table.ColumnHeader>
+		<Flex style={{maxWidth: '800px', margin: '0 auto'}} direction="column" gap="2">
+			<ProgressBox isLoading={isPending}>
+				<Table.Root
+					variant="outline"
+					size="md"
+					striped={true}
+					stickyHeader={true}
+					interactive={true}
+				>
+					<Table.ColumnGroup>
+						<Table.Column htmlWidth="40%"/>
 
-						<Table.ColumnHeader>Title</Table.ColumnHeader>
+						<Table.Column htmlWidth="30%"/>
 
-						<Table.ColumnHeader>Artist</Table.ColumnHeader>
+						<Table.Column htmlWidth="15%"/>
 
-						<Table.ColumnHeader>Album</Table.ColumnHeader>
-					</Table.Row>
-				</Table.Header>
+						<Table.Column htmlWidth="15%"/>
+					</Table.ColumnGroup>
 
-				<Table.Body>
-					{availableTracks.map(({
-						id,
-						title,
-						artist,
-						album,
-						coverImage,
-					}) => {
-						return (
-							<Table.Row key={id}>
-								<Table.Cell>
-									<Image
-										src={coverImage}
-										fallbackSrc={DefaultTrackCover}
-										alt={`${title} by ${artist} cover`}
-										rounded="md"
-										height="48px"
-										width="48px"
-										fit="contain"
-									/>
-								</Table.Cell>
+					<Table.Header>
+						<Table.Row>
+							<Table.ColumnHeader>
+								<Text fontWeight="semibold">
+									Title
+								</Text>
+							</Table.ColumnHeader>
 
-								<Table.Cell>{title}</Table.Cell>
+							<Table.ColumnHeader>
+								<Text fontWeight="semibold">
+									Album
+								</Text>
+							</Table.ColumnHeader>
 
-								<Table.Cell>{artist}</Table.Cell>
+							<Table.ColumnHeader>
+								<Text fontWeight="semibold">
+									Created at
+								</Text>
+							</Table.ColumnHeader>
 
-								<Table.Cell>{album}</Table.Cell>
-							</Table.Row>
-						);
-					})}
-				</Table.Body>
-			</Table.Root>
+							<Table.ColumnHeader>
+								<Text fontWeight="semibold">
+									Updated at
+								</Text>
+							</Table.ColumnHeader>
+						</Table.Row>
+					</Table.Header>
+
+					<Table.Body>
+						{availableTracks.map(({
+							id,
+							title,
+							artist,
+							album,
+							coverImage,
+							createdAt,
+							updatedAt,
+						}) => {
+							return (
+								<Table.Row key={id}>
+									<Table.Cell>
+										<Flex gap="4">
+											<Image
+												src={coverImage}
+												fallbackSrc={DefaultTrackCover}
+												alt={`${title} by ${artist} cover`}
+												rounded="md"
+												height="48px"
+												width="48px"
+												fit="contain"
+											/>
+
+											<Flex direction="column">
+												<Text fontWeight="semibold">
+													{title}
+												</Text>
+
+												<Text fontSize="small">
+													{artist}
+												</Text>
+											</Flex>
+										</Flex>
+									</Table.Cell>
+
+									<Table.Cell>{album}</Table.Cell>
+
+									<Table.Cell>
+										{createdAt ? new Date(createdAt).toLocaleDateString() : '-'}
+									</Table.Cell>
+
+									<Table.Cell>
+										{updatedAt ? new Date(updatedAt).toLocaleDateString() : '-'}
+									</Table.Cell>
+								</Table.Row>
+							);
+						})}
+					</Table.Body>
+				</Table.Root>
+			</ProgressBox>
 
 			<Pagination.Root
 				count={totalTracks}
@@ -120,7 +174,7 @@ const TracksPage: FC = () => {
 					</Pagination.NextTrigger>
 				</ButtonGroup>
 			</Pagination.Root>
-		</ProgressBox>
+		</Flex>
 	);
 };
 
