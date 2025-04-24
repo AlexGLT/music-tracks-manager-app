@@ -12,30 +12,30 @@ import type {TrackInfo} from '../types';
 
 const EMPTY_TRACKS: Array<TrackInfo> = [];
 
-const DEFAULT_PAGE_NUMBER = 1;
-const DEFAULT_PAGE_SIZE = 10;
 const DEFAULT_TOTAL_TRACKS = 0;
 const DEFAULT_TOTAL_PAGES = 1;
+
+type Params = {
+	activePageNumber: number,
+	activePageSize: number,
+};
 
 type ReturnParams = {
 	isPending: boolean,
 	availableTracks: Array<TrackInfo>,
-	activePageNumber: number,
-	activePageSize: number,
 	totalTracks: number,
 	totalPages: number,
-	changePageNumber: (page: number) => void,
-	changePageSize: (rowPerPageCount: number) => void,
 };
 
-export const useAvailableTracks = (): ReturnParams => {
+export const useAvailableTracks = ({
+	activePageNumber,
+	activePageSize,
+}: Params): ReturnParams => {
 	const {abort, createAbortSignal} = useAbortSignal();
 
 	const [isPending, setIsPending] = useState(true);
 	const [availableTracks, setAvailableTracks] = useState(EMPTY_TRACKS);
 
-	const [activePageNumber, setActivePageNumber] = useState(DEFAULT_PAGE_NUMBER);
-	const [activePageSize, setActivePageSize] = useState(DEFAULT_PAGE_SIZE);
 	const [totalTracks, setTotalTracks] = useState(DEFAULT_TOTAL_TRACKS);
 	const [totalPages, setTotalPages] = useState(DEFAULT_TOTAL_PAGES);
 
@@ -88,8 +88,6 @@ export const useAvailableTracks = (): ReturnParams => {
 					console.error(error.message);
 
 					if (!isUnmounted) {
-						setAvailableTracks(EMPTY_TRACKS);
-						setActivePageNumber(DEFAULT_PAGE_NUMBER);
 						setTotalTracks(DEFAULT_TOTAL_TRACKS);
 						setTotalPages(DEFAULT_TOTAL_PAGES);
 					}
@@ -115,11 +113,7 @@ export const useAvailableTracks = (): ReturnParams => {
 	return {
 		isPending,
 		availableTracks,
-		activePageNumber,
-		activePageSize,
 		totalTracks,
 		totalPages,
-		changePageNumber: setActivePageNumber,
-		changePageSize: setActivePageSize,
 	};
 };

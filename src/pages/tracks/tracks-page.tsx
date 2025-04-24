@@ -1,22 +1,15 @@
 import {
 	Box,
 	Button,
-	ButtonGroup,
-	createListCollection,
 	Flex,
 	IconButton,
-	Pagination,
 	Popover,
 	Portal,
-	Select,
 	Table,
 	Text,
-	Tooltip,
 } from '@chakra-ui/react';
 
 import {
-	HiChevronLeft,
-	HiChevronRight,
 	HiOutlineClock,
 	HiOutlinePencil,
 	HiOutlineTrash,
@@ -32,19 +25,22 @@ import {
 import DefaultTrackCover from '@assets/default-track-cover.png';
 import ProgressBox from '@shared/ui/progress-box';
 import Image from '@shared/ui/image';
-import {isNumber} from '@shared/utils';
+import Tooltip from '@shared/ui/tooltip';
 
+import {PageNavigator, PageSizeSelect, usePagination} from './pagination';
 import {useAvailableGenres, useAvailableTracks} from './hooks';
 
-import type {ComponentProps, FC} from 'react';
+import type {FC} from 'react';
 
-
-type OnPageChange = NonNullable<ComponentProps<typeof Pagination.Root>['onPageChange']>;
-type OnPageSizeChange = NonNullable<ComponentProps<typeof Select.Root>['onValueChange']>;
-
-const availablePageSizes = createListCollection({items: [5, 10, 25, 50].map((pageSize) => String(pageSize))});
 
 const TracksPage: FC = () => {
+	const {
+		activePageNumber,
+		activePageSize,
+		changePageNumber,
+		changePageSize,
+	} = usePagination();
+
 	const {
 		isPending: isGenresPending,
 		availableGenres,
@@ -53,12 +49,11 @@ const TracksPage: FC = () => {
 	const {
 		isPending: isTracksPending,
 		availableTracks,
+		totalTracks,
+	} = useAvailableTracks({
 		activePageNumber,
 		activePageSize,
-		totalTracks,
-		changePageNumber,
-		changePageSize,
-	} = useAvailableTracks();
+	});
 
 	const {
 		isCreateTrackDialogOpen,
@@ -75,21 +70,6 @@ const TracksPage: FC = () => {
 	if ((isGenresPending && !availableGenres.length) || (isTracksPending && !availableTracks.length)) {
 		return <div>Loading...</div>;
 	}
-
-	const handlePageChange: OnPageChange = (details): void => {
-		changePageNumber(details.page);
-		changePageSize(details.pageSize);
-	};
-
-	const handlePageSizeChange: OnPageSizeChange = (details): void => {
-		const pageSize = details.value.length
-			? Number(details.value[0])
-			: undefined;
-
-		if (isNumber(pageSize)) {
-			changePageSize(pageSize);
-		}
-	};
 
 	const isPending = isTracksPending || isGenresPending;
 
@@ -182,29 +162,15 @@ const TracksPage: FC = () => {
 											</Flex>
 
 											<Popover.Root>
-												<Tooltip.Root positioning={{placement: 'top'}} openDelay={500}>
-													<Tooltip.Trigger asChild={true}>
-														<Box display="inline-block">
-															<Popover.Trigger asChild={true}>
-																<IconButton variant="surface" size="2xs">
-																	<HiOutlineClock/>
-																</IconButton>
-															</Popover.Trigger>
-														</Box>
-													</Tooltip.Trigger>
-
-													<Portal>
-														<Tooltip.Positioner>
-															<Tooltip.Content>
-																<Tooltip.Arrow>
-																	<Tooltip.ArrowTip/>
-																</Tooltip.Arrow>
-
-																Click to see creating and updating times
-															</Tooltip.Content>
-														</Tooltip.Positioner>
-													</Portal>
-												</Tooltip.Root>
+												<Tooltip content="Click to see creating and updating times">
+													<Box display="inline-block">
+														<Popover.Trigger asChild={true}>
+															<IconButton variant="surface" size="2xs">
+																<HiOutlineClock/>
+															</IconButton>
+														</Popover.Trigger>
+													</Box>
+												</Tooltip>
 
 												<Portal>
 													<Popover.Positioner>
@@ -285,69 +251,20 @@ const TracksPage: FC = () => {
 				width="100%"
 				style={{position: 'sticky', bottom: 0}}
 			>
-				{totalTracks > activePageSize ? (
-					<Pagination.Root
-						count={totalTracks}
-						page={activePageNumber}
-						pageSize={activePageSize}
-						onPageChange={handlePageChange}
-					>
-						<ButtonGroup variant="ghost" size="md">
-							<Pagination.PrevTrigger asChild={true}>
-								<IconButton>
-									<HiChevronLeft/>
-								</IconButton>
-							</Pagination.PrevTrigger>
+				<PageNavigator
+					totalTracks={totalTracks}
+					activePageNumber={activePageNumber}
+					activePageSize={activePageSize}
+					onPageNumberChange={changePageNumber}
+				/>
 
-							<Pagination.Items
-								render={(page) => (
-									<IconButton variant={{base: 'ghost', _selected: 'outline'}}>
-										{page.value}
-									</IconButton>
-								)}
-							/>
-
-							<Pagination.NextTrigger asChild={true}>
-								<IconButton>
-									<HiChevronRight/>
-								</IconButton>
-							</Pagination.NextTrigger>
-						</ButtonGroup>
-					</Pagination.Root>
-				) : null}
-
-				<Select.Root
+				<PageSizeSelect
+					activePageSize={activePageSize}
+					onPageSizeChange={changePageSize}
 					size="md"
-					collection={availablePageSizes}
 					marginLeft="auto"
 					width="30%"
-					value={[String(activePageSize)]}
-					onValueChange={handlePageSizeChange}
-				>
-					<Select.Control>
-						<Select.Trigger>
-							<Select.ValueText placeholder="Select page size"/>
-						</Select.Trigger>
-
-						<Select.IndicatorGroup>
-							<Select.Indicator/>
-						</Select.IndicatorGroup>
-					</Select.Control>
-
-					<Portal>
-						<Select.Positioner>
-							<Select.Content>
-								{availablePageSizes.items.map((pageSize) => (
-									<Select.Item key={pageSize} item={pageSize}>
-										{pageSize}
-
-										<Select.ItemIndicator/>
-									</Select.Item>
-								))}
-							</Select.Content>
-						</Select.Positioner>
-					</Portal>
-				</Select.Root>
+				/>
 			</Flex>
 
 			<CreateTrackFormDialog
