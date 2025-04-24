@@ -5,7 +5,7 @@ export const EditedTrackInfoSchema = z.object({
 	title: z.string().nonempty(),
 	artist: z.string().nonempty(),
 	album: z.string().optional(),
-	genres: z.array(z.string()),
+	genres: z.array(z.string()).nonempty(),
 	coverImage: z.string().url().optional(),
 });
 

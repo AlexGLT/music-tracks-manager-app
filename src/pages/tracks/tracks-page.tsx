@@ -26,7 +26,7 @@ import ProgressBox from '@shared/ui/progress-box';
 import Image from '@shared/ui/image-with-fallback';
 import {isNumber} from '@shared/utils';
 
-import {useAvailableTracks} from './hooks';
+import {useAvailableGenres, useAvailableTracks} from './hooks';
 import EditTrackDialog, {useTrackEditing} from './edit-track';
 
 import type {ComponentProps, FC} from 'react';
@@ -39,7 +39,12 @@ const availablePageSizes = createListCollection({items: [5, 10, 25, 50].map((pag
 
 const TracksPage: FC = () => {
 	const {
-		isPending,
+		isPending: isGenresPending,
+		availableGenres,
+	} = useAvailableGenres();
+
+	const {
+		isPending: isTracksPending,
 		availableTracks,
 		activePageNumber,
 		activePageSize,
@@ -54,7 +59,7 @@ const TracksPage: FC = () => {
 		clearActiveEditTrack,
 	} = useTrackEditing();
 
-	if (isPending && !availableTracks.length) {
+	if ((isGenresPending && !availableGenres.length) || (isTracksPending && !availableTracks.length)) {
 		return <div>Loading...</div>;
 	}
 
@@ -72,6 +77,8 @@ const TracksPage: FC = () => {
 			changePageSize(pageSize);
 		}
 	};
+
+	const isPending = isTracksPending || isGenresPending;
 
 	return (
 		<Flex
@@ -329,6 +336,7 @@ const TracksPage: FC = () => {
 			</Flex>
 
 			<EditTrackDialog
+				availableGenres={availableGenres}
 				activeEditTrack={activeEditTrack}
 				onClose={clearActiveEditTrack}
 			/>

@@ -1,5 +1,6 @@
-import {useLayoutEffect, useMemo, useRef} from 'react';
+import {useLayoutEffect, useRef} from 'react';
 import {useForm} from '@tanstack/react-form';
+import {HiOutlinePlusCircle} from 'react-icons/hi';
 
 import {
 	Dialog,
@@ -11,9 +12,13 @@ import {
 	Field,
 	Popover,
 	Text,
+	Tag,
+	Wrap,
+	IconButton,
+	Menu,
 } from '@chakra-ui/react';
 
-import {isEqual} from 'es-toolkit';
+import {difference, isEqual, without} from 'es-toolkit';
 
 import {EditedTrackInfoSchema} from './types';
 
@@ -30,20 +35,24 @@ import type {EditedTrackInfo} from './types';
 const EMPTY_TRACK_INFO: EditedTrackInfo = {
 	title: '',
 	artist: '',
+	// @ts-expect-error WHY: only for initialization
 	genres: [],
 };
 
 type OnOpenChange = NonNullable<ComponentProps<typeof Dialog.Root>['onOpenChange']>;
 
 type Props = {
+	availableGenres: Array<string>,
 	activeEditTrack: TrackInfo | undefined,
 	onClose: () => void,
 };
 
 const EditTrackDialog: FC<Props> = ({
+	availableGenres,
 	activeEditTrack,
 	onClose: onCloseExternal,
 }) => {
+	const dialogContentRef = useRef<HTMLDivElement | null>(null);
 	const initialElementRef = useRef<HTMLInputElement>(null);
 
 	const form = useForm({
@@ -56,36 +65,17 @@ const EditTrackDialog: FC<Props> = ({
 		},
 	});
 
-	const activeTrackInfo = useMemo(() => {
-		if (activeEditTrack) {
-			const {
-				title,
-				artist,
-				album,
-				genres,
-				coverImage,
-			} = activeEditTrack;
-
-			return {
-				title,
-				artist,
-				album,
-				genres,
-				coverImage,
-			};
-		}
-
-		return undefined;
-	}, [activeEditTrack]);
-
 	useLayoutEffect(() => {
-		if (activeTrackInfo) {
-			form.reset(activeTrackInfo, {keepDefaultValues: true});
+		if (activeEditTrack) {
+			form.reset({
+				title: activeEditTrack.title,
+				artist: activeEditTrack.artist,
+				album: activeEditTrack.album,
+				genres: activeEditTrack.genres,
+				coverImage: activeEditTrack.coverImage,
+			}, {keepDefaultValues: false});
 		}
-	}, [
-		activeTrackInfo,
-		form,
-	]);
+	}, [activeEditTrack, form]);
 
 	const onOpenChange: OnOpenChange = ({open}) => {
 		if (!open) {
@@ -112,7 +102,7 @@ const EditTrackDialog: FC<Props> = ({
 					<Dialog.Backdrop/>
 
 					<Dialog.Positioner>
-						<Dialog.Content>
+						<Dialog.Content ref={dialogContentRef}>
 							<Dialog.Header>
 								<Dialog.Title>Edit Track</Dialog.Title>
 							</Dialog.Header>
@@ -181,6 +171,90 @@ const EditTrackDialog: FC<Props> = ({
 										}}
 									</form.Field>
 
+									<form.Field name="genres">
+										{({state, handleBlur, handleChange}) => {
+											const {meta: {errors}, value} = state;
+											const errorMessage = errors[0]?.message;
+											const unselectedEntities = difference(availableGenres, value);
+
+											return (
+												<Field.Root required={true}>
+													<Field.Label>Genres</Field.Label>
+
+													<Wrap>
+														{value.map((genre) => {
+															const onCloseIconClick = (): void => {
+																// @ts-expect-error WHY: only for initialization
+																handleChange(without(value, genre));
+															};
+
+															return (
+																<Tag.Root key={genre} variant="surface" size="lg">
+																	<Tag.Label>
+																		{genre}
+																	</Tag.Label>
+
+																	<Tag.EndElement>
+																		<Tag.CloseTrigger
+																			cursor="pointer"
+																			onClick={onCloseIconClick}
+																		/>
+																	</Tag.EndElement>
+																</Tag.Root>
+															);
+														})}
+
+														{unselectedEntities.length ? (
+															<Tag.Root padding={0} size="lg">
+																<Menu.Root>
+																	<Tag.Label>
+																		<Menu.Trigger asChild={true}>
+																			<IconButton
+																				variant="ghost"
+																				rounded="full"
+																				size="xs"
+																			>
+																				<HiOutlinePlusCircle/>
+																			</IconButton>
+
+																		</Menu.Trigger>
+																	</Tag.Label>
+
+																	<Portal container={dialogContentRef}>
+																		<Menu.Positioner>
+																			<Menu.Content>
+																				{unselectedEntities.map((genre) => {
+																					const onItemClick = (): void => {
+																						handleChange(
+																							// @ts-expect-error WHY: only for initialization
+																							value.concat(genre),
+																						);
+																					};
+
+																					return (
+																						<Menu.Item
+																							key={genre}
+																							value={genre}
+																							onClick={onItemClick}
+																						>
+																							{genre}
+																						</Menu.Item>
+																					);
+																				})}
+																			</Menu.Content>
+																		</Menu.Positioner>
+																	</Portal>
+																</Menu.Root>
+															</Tag.Root>
+														) : null}
+													</Wrap>
+
+													<Field.ErrorText>{errorMessage}</Field.ErrorText>
+												</Field.Root>
+											);
+										}}
+									</form.Field>
+
 									<form.Field name="coverImage">
 										{({state, handleBlur, handleChange}) => {
 											const {meta: {errors}, value} = state;
@@ -205,8 +279,8 @@ const EditTrackDialog: FC<Props> = ({
 								</Flex>
 							</Dialog.Body>
 
-							<form.Subscribe selector={(state) => state.values}>
-								{(currentValues) => {
+							<form.Subscribe selector={(state) => [state.values, state.canSubmit] as const}>
+								{([currentValues, canSubmit]) => {
 									const areValuesDefault = isEqual(
 										currentValues,
 										form.options.defaultValues,
@@ -219,7 +293,7 @@ const EditTrackDialog: FC<Props> = ({
 													<Button
 														type="submit"
 														colorPalette="blue"
-														disabled={areValuesDefault}
+														disabled={areValuesDefault || !canSubmit}
 													>
 														Save
 													</Button>
