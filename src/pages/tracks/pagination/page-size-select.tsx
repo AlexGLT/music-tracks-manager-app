@@ -27,11 +27,12 @@ type OnPageSizeChange = NonNullable<ComponentProps<typeof Select.Root>['onValueC
 type Props = {
 	activePageSize: number,
 	onPageSizeChange: (pageSize: number) => void,
-} & Omit<ComponentProps<typeof Select.Root>, 'collection' | 'value' | 'onValueChange'>;
+} & Omit<ComponentProps<typeof Select.Root>, 'collection' | 'value' | 'onValueChange' | 'children'>;
 
 export const PageSizeSelect: FC<Props> = memo(function PageSizeSelect({
 	activePageSize,
 	onPageSizeChange,
+	...restProps
 }) {
 	const handlePageSizeChange: OnPageSizeChange = (details): void => {
 		const pageSize = details.value.length
@@ -45,6 +46,7 @@ export const PageSizeSelect: FC<Props> = memo(function PageSizeSelect({
 
 	return (
 		<Select.Root
+			{...restProps}
 			collection={availablePageSizes}
 			value={[String(activePageSize)]}
 			onValueChange={handlePageSizeChange}

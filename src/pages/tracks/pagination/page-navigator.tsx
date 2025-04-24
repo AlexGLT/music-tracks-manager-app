@@ -18,7 +18,7 @@ type Props = {
 	activePageSize: number,
 	activePageNumber: number,
 	onPageNumberChange: (pageNumber: number) => void,
-} & Omit<ComponentProps<typeof Pagination.Root>, 'count' | 'page' | 'pageSize' | 'onPageChange'>;
+} & Omit<ComponentProps<typeof Pagination.Root>, 'count' | 'page' | 'pageSize' | 'onPageChange' | 'children'>;
 
 export const PageNavigator: FC<Props> = memo(function PageNavigator({
 	totalTracks,
