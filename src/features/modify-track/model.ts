@@ -1,7 +1,7 @@
 import {z} from 'zod';
 
 
-export const EditedTrackInfoSchema = z.object({
+export const ModifiedTrackSchema = z.object({
 	title: z.string().nonempty(),
 	artist: z.string().nonempty(),
 	album: z.string().optional(),
@@ -9,4 +9,4 @@ export const EditedTrackInfoSchema = z.object({
 	coverImage: z.string().url().optional(),
 });
 
-export type EditedTrackInfo = z.infer<typeof EditedTrackInfoSchema>;
+export type ModifiedTrack = z.infer<typeof ModifiedTrackSchema>;

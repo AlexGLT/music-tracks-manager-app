@@ -1,5 +1,10 @@
 import {useState} from 'react';
-import {Box, Image, Skeleton} from '@chakra-ui/react';
+
+import {
+	Box,
+	Image as ChakraImage,
+	Skeleton,
+} from '@chakra-ui/react';
 
 import type {FC, SyntheticEvent} from 'react';
 import type {ImageProps} from '@chakra-ui/react';
@@ -9,7 +14,7 @@ type Props = ImageProps & {
 	fallbackSrc?: string,
 };
 
-const ImageWithFallback: FC<Props> = ({
+const Image: FC<Props> = ({
 	fallbackSrc,
 	src,
 	width,
@@ -36,7 +41,7 @@ const ImageWithFallback: FC<Props> = ({
 
 	return (
 		<Box position="relative">
-			<Image
+			<ChakraImage
 				{...restProps}
 				src={srcWithFallback}
 				rounded={rounded}
@@ -59,4 +64,4 @@ const ImageWithFallback: FC<Props> = ({
 	);
 };
 
-export default ImageWithFallback;
+export default Image;

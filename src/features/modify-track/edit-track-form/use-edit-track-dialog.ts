@@ -2,19 +2,19 @@ import {useState} from 'react';
 
 import {useStableCallback} from '@shared/hooks';
 
-import type {TrackInfo} from '../types';
+import type {Track} from '@entities/track';
 
 
 type ReturnParams = {
-	activeEditTrack: TrackInfo | undefined,
-	changeActiveEditTrack: (track: TrackInfo) => void,
+	activeEditTrack: Track | undefined,
+	changeActiveEditTrack: (track: Track) => void,
 	clearActiveEditTrack: () => void,
 };
 
-export const useTrackEditing = (): ReturnParams => {
-	const [activeEditTrack, setActiveEditTrack] = useState<TrackInfo | undefined>(undefined);
+export const useEditTrackDialog = (): ReturnParams => {
+	const [activeEditTrack, setActiveEditTrack] = useState<Track | undefined>(undefined);
 
-	const changeActiveEditTrack = useStableCallback((track: TrackInfo): void => {
+	const changeActiveEditTrack = useStableCallback((track: Track): void => {
 		setActiveEditTrack(track);
 	});
 

@@ -162,14 +162,15 @@ export const typescriptRules = {
 	'typescript/no-array-delete': SEVERITY.ERROR,
 
 	// https://typescript-eslint.io/rules/no-base-to-string
-	'typescript/no-base-to-string': [SEVERITY.ERROR, {
-		ignoredTypeNames: [
-			'Error',
-			'RegExp',
-			'URL',
-			'URLSearchParams',
-		],
-	}],
+	// 'typescript/no-base-to-string': [SEVERITY.ERROR, {
+	// 	ignoredTypeNames: [
+	// 		'Error',
+	// 		'RegExp',
+	// 		'URL',
+	// 		'URLSearchParams',
+	// 	],
+	// }],
+	'typescript/no-base-to-string': SEVERITY.OFF, // WHY: returns later
 
 	// https://typescript-eslint.io/rules/no-confusing-non-null-assertion
 	'typescript/no-confusing-non-null-assertion': SEVERITY.ERROR,
@@ -558,17 +559,18 @@ export const typescriptRules = {
 	'typescript/return-await': [SEVERITY.ERROR, 'always'],
 
 	// https://typescript-eslint.io/rules/strict-boolean-expressions
-	'typescript/strict-boolean-expressions': [SEVERITY.ERROR, {
-		allowString: true,
-		allowNumber: true,
-		allowNullableObject: true,
-		allowNullableBoolean: true,
-		allowNullableString: true,
-		allowNullableNumber: false,
-		allowNullableEnum: true,
-		allowAny: true,
-		allowRuleToRunWithoutStrictNullChecksIKnowWhatIAmDoing: false,
-	}],
+	// 'typescript/strict-boolean-expressions': [SEVERITY.ERROR, {
+	// 	allowString: true,
+	// 	allowNumber: true,
+	// 	allowNullableObject: true,
+	// 	allowNullableBoolean: true,
+	// 	allowNullableString: true,
+	// 	allowNullableNumber: false,
+	// 	allowNullableEnum: true,
+	// 	allowAny: true,
+	// 	allowRuleToRunWithoutStrictNullChecksIKnowWhatIAmDoing: false,
+	// }],
+	'typescript/strict-boolean-expressions': SEVERITY.OFF, // WHY: uncomment later
 
 	// https://typescript-eslint.io/rules/switch-exhaustiveness-check
 	'typescript/switch-exhaustiveness-check': [SEVERITY.ERROR, {

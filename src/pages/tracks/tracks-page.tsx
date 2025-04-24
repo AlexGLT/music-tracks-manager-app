@@ -1,5 +1,6 @@
 import {
 	Box,
+	Button,
 	ButtonGroup,
 	createListCollection,
 	Flex,
@@ -21,13 +22,19 @@ import {
 	HiOutlineTrash,
 } from 'react-icons/hi';
 
+import {
+	CreateTrackFormDialog,
+	EditTrackFormDialog,
+	useCreateTrackDialog,
+	useEditTrackDialog,
+} from '@features/modify-track';
+
 import DefaultTrackCover from '@assets/default-track-cover.png';
 import ProgressBox from '@shared/ui/progress-box';
-import Image from '@shared/ui/image-with-fallback';
+import Image from '@shared/ui/image';
 import {isNumber} from '@shared/utils';
 
 import {useAvailableGenres, useAvailableTracks} from './hooks';
-import EditTrackDialog, {useTrackEditing} from './edit-track';
 
 import type {ComponentProps, FC} from 'react';
 
@@ -54,10 +61,16 @@ const TracksPage: FC = () => {
 	} = useAvailableTracks();
 
 	const {
+		isCreateTrackDialogOpen,
+		openCreateTrackDialog,
+		closeCreateTrackDialog,
+	} = useCreateTrackDialog();
+
+	const {
 		activeEditTrack,
 		changeActiveEditTrack,
 		clearActiveEditTrack,
-	} = useTrackEditing();
+	} = useEditTrackDialog();
 
 	if ((isGenresPending && !availableGenres.length) || (isTracksPending && !availableTracks.length)) {
 		return <div>Loading...</div>;
@@ -87,6 +100,8 @@ const TracksPage: FC = () => {
 			gap="2"
 			position="relative"
 		>
+			<Button onClick={openCreateTrackDialog}>Create track</Button>
+
 			<ProgressBox isLoading={isPending}>
 				<Table.Root
 					variant="outline"
@@ -335,8 +350,14 @@ const TracksPage: FC = () => {
 				</Select.Root>
 			</Flex>
 
-			<EditTrackDialog
-				availableGenres={availableGenres}
+			<CreateTrackFormDialog
+				allGenres={availableGenres}
+				isOpen={isCreateTrackDialogOpen}
+				onClose={closeCreateTrackDialog}
+			/>
+
+			<EditTrackFormDialog
+				allGenres={availableGenres}
 				activeEditTrack={activeEditTrack}
 				onClose={clearActiveEditTrack}
 			/>
