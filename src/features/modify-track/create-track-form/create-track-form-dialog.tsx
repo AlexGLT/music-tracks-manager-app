@@ -1,4 +1,4 @@
-import {useRef} from 'react';
+import {memo, useRef} from 'react';
 
 import {ModifyTrackDialog} from '../modify-track-dialog';
 import {useModifyTrackForm} from '../use-modify-track-form';
@@ -14,11 +14,11 @@ type Props = {
 	onClose: () => void,
 };
 
-export const CreateTrackFormDialog: FC<Props> = ({
+export const CreateTrackFormDialog: FC<Props> = memo(function CreateTrackFormDialog({
 	allGenres,
 	isOpen,
 	onClose,
-}) => {
+}) {
 	const dialogRef = useRef<HTMLDivElement | null>(null);
 	const initialElementRef = useRef<HTMLInputElement | null>(null);
 
@@ -121,4 +121,4 @@ export const CreateTrackFormDialog: FC<Props> = ({
 			</ModifyTrackDialog>
 		</form>
 	);
-};
+});
