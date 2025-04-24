@@ -27,6 +27,7 @@ import Image from '@shared/ui/image-with-fallback';
 import {isNumber} from '@shared/utils';
 
 import {useAvailableTracks} from './hooks';
+import EditTrackDialog, {useTrackEditing} from './edit-track';
 
 import type {ComponentProps, FC} from 'react';
 
@@ -46,6 +47,12 @@ const TracksPage: FC = () => {
 		changePageNumber,
 		changePageSize,
 	} = useAvailableTracks();
+
+	const {
+		activeEditTrack,
+		changeActiveEditTrack,
+		clearActiveEditTrack,
+	} = useTrackEditing();
 
 	if (isPending && !availableTracks.length) {
 		return <div>Loading...</div>;
@@ -111,15 +118,21 @@ const TracksPage: FC = () => {
 					</Table.Header>
 
 					<Table.Body>
-						{availableTracks.map(({
-							id,
-							title,
-							artist,
-							album,
-							coverImage,
-							createdAt,
-							updatedAt,
-						}) => {
+						{availableTracks.map((track) => {
+							const {
+								id,
+								title,
+								artist,
+								album,
+								coverImage,
+								createdAt,
+								updatedAt,
+							} = track;
+
+							const onEditButtonClick = (): void => {
+								changeActiveEditTrack(track);
+							};
+
 							return (
 								<Table.Row key={id}>
 									<Table.Cell>
@@ -216,11 +229,18 @@ const TracksPage: FC = () => {
 
 									<Table.Cell justifyItems="end">
 										<Flex gap="2">
-											<IconButton variant="outline" colorPalette="yellow">
+											<IconButton
+												variant="outline"
+												colorPalette="yellow"
+												onClick={onEditButtonClick}
+											>
 												<HiOutlinePencil/>
 											</IconButton>
 
-											<IconButton variant="outline" colorPalette="red">
+											<IconButton
+												variant="outline"
+												colorPalette="red"
+											>
 												<HiOutlineTrash/>
 											</IconButton>
 										</Flex>
@@ -307,6 +327,11 @@ const TracksPage: FC = () => {
 					</Portal>
 				</Select.Root>
 			</Flex>
+
+			<EditTrackDialog
+				activeEditTrack={activeEditTrack}
+				onClose={clearActiveEditTrack}
+			/>
 		</Flex>
 	);
 };
