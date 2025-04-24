@@ -1,18 +1,22 @@
 import {
+	Box,
 	ButtonGroup,
 	createListCollection,
 	Flex,
 	IconButton,
 	Pagination,
+	Popover,
 	Portal,
 	Select,
 	Table,
 	Text,
+	Tooltip,
 } from '@chakra-ui/react';
 
 import {
 	HiChevronLeft,
 	HiChevronRight,
+	HiOutlineClock,
 	HiOutlinePencil,
 	HiOutlineTrash,
 } from 'react-icons/hi';
@@ -64,7 +68,7 @@ const TracksPage: FC = () => {
 
 	return (
 		<Flex
-			style={{maxWidth: '800px', margin: '0 auto'}}
+			style={{maxWidth: '600px', margin: '0 auto'}}
 			direction="column"
 			gap="2"
 			position="relative"
@@ -77,15 +81,11 @@ const TracksPage: FC = () => {
 					interactive={true}
 				>
 					<Table.ColumnGroup>
-						<Table.Column htmlWidth="35%"/>
+						<Table.Column htmlWidth="50%"/>
 
-						<Table.Column htmlWidth="25%"/>
+						<Table.Column htmlWidth="30%"/>
 
-						<Table.Column htmlWidth="12.5%"/>
-
-						<Table.Column htmlWidth="12.5%"/>
-
-						<Table.Column htmlWidth="15%"/>
+						<Table.Column htmlWidth="20%"/>
 					</Table.ColumnGroup>
 
 					<Table.Header>
@@ -101,19 +101,6 @@ const TracksPage: FC = () => {
 									Album
 								</Text>
 							</Table.ColumnHeader>
-
-							<Table.ColumnHeader>
-								<Text fontWeight="semibold">
-									Created at
-								</Text>
-							</Table.ColumnHeader>
-
-							<Table.ColumnHeader>
-								<Text fontWeight="semibold">
-									Updated at
-								</Text>
-							</Table.ColumnHeader>
-
 
 							<Table.ColumnHeader>
 								<Text fontWeight="semibold">
@@ -136,38 +123,96 @@ const TracksPage: FC = () => {
 							return (
 								<Table.Row key={id}>
 									<Table.Cell>
-										<Flex gap="4">
-											<Image
-												src={coverImage}
-												fallbackSrc={DefaultTrackCover}
-												alt={`${title} by ${artist} cover`}
-												rounded="md"
-												height="48px"
-												width="48px"
-												fit="contain"
-											/>
+										<Flex justify="space-between">
+											<Flex gap="4">
+												<Image
+													src={coverImage}
+													fallbackSrc={DefaultTrackCover}
+													alt={`${title} by ${artist} cover`}
+													rounded="md"
+													height="48px"
+													width="48px"
+													fit="contain"
+												/>
 
-											<Flex direction="column">
-												<Text fontWeight="semibold">
-													{title}
-												</Text>
+												<Flex direction="column">
+													<Text fontWeight="semibold">
+														{title}
+													</Text>
 
-												<Text fontSize="small">
-													{artist}
-												</Text>
+													<Text fontSize="small">
+														{artist}
+													</Text>
+												</Flex>
 											</Flex>
+
+											<Popover.Root>
+												<Tooltip.Root positioning={{placement: 'top'}} openDelay={500}>
+													<Tooltip.Trigger asChild={true}>
+														<Box display="inline-block">
+															<Popover.Trigger asChild={true}>
+																<IconButton variant="surface" size="2xs">
+																	<HiOutlineClock/>
+																</IconButton>
+															</Popover.Trigger>
+														</Box>
+													</Tooltip.Trigger>
+
+													<Portal>
+														<Tooltip.Positioner>
+															<Tooltip.Content>
+																<Tooltip.Arrow>
+																	<Tooltip.ArrowTip/>
+																</Tooltip.Arrow>
+
+																Click to see creating and updating times
+															</Tooltip.Content>
+														</Tooltip.Positioner>
+													</Portal>
+												</Tooltip.Root>
+
+												<Portal>
+													<Popover.Positioner>
+														<Popover.Content width="auto">
+															<Popover.Arrow/>
+
+															<Popover.Body>
+																<Flex direction="column" gap="2">
+																	{createdAt ? (
+																		<Text>
+																			<Text fontWeight="bold" as="b">
+																				Created at
+																			</Text>
+																			&nbsp;
+																			<Text as="span">
+																				{new Date(createdAt)
+																					.toLocaleDateString()}
+																			</Text>
+																		</Text>
+																	) : null}
+
+																	{updatedAt && updatedAt !== createdAt ? (
+																		<Text>
+																			<Text fontWeight="bold" as="b">
+																				Updated at
+																			</Text>
+																			&nbsp;
+																			<Text as="span">
+																				{new Date(updatedAt)
+																					.toLocaleDateString()}
+																			</Text>
+																		</Text>
+																	) : null}
+																</Flex>
+															</Popover.Body>
+														</Popover.Content>
+													</Popover.Positioner>
+												</Portal>
+											</Popover.Root>
 										</Flex>
 									</Table.Cell>
 
 									<Table.Cell>{album}</Table.Cell>
-
-									<Table.Cell>
-										{createdAt ? new Date(createdAt).toLocaleDateString() : '-'}
-									</Table.Cell>
-
-									<Table.Cell>
-										{updatedAt ? new Date(updatedAt).toLocaleDateString() : '-'}
-									</Table.Cell>
 
 									<Table.Cell justifyItems="end">
 										<Flex gap="2">
