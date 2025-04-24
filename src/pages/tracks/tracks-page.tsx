@@ -1,8 +1,11 @@
 import {
 	ButtonGroup,
+	createListCollection,
 	Flex,
 	IconButton,
 	Pagination,
+	Portal,
+	Select,
 	Table,
 	Text,
 } from '@chakra-ui/react';
@@ -12,6 +15,7 @@ import {HiChevronLeft, HiChevronRight} from 'react-icons/hi';
 import DefaultTrackCover from '@assets/default-track-cover.png';
 import ProgressBox from '@shared/ui/progress-box';
 import Image from '@shared/ui/image-with-fallback';
+import {isNumber} from '@shared/utils';
 
 import {useAvailableTracks} from './hooks';
 
@@ -19,7 +23,9 @@ import type {ComponentProps, FC} from 'react';
 
 
 type OnPageChange = NonNullable<ComponentProps<typeof Pagination.Root>['onPageChange']>;
-type OnPageSizeChange = NonNullable<ComponentProps<typeof Pagination.Root>['onPageSizeChange']>;
+type OnPageSizeChange = NonNullable<ComponentProps<typeof Select.Root>['onValueChange']>;
+
+const availablePageSizes = createListCollection({items: [5, 10, 25, 50].map((pageSize) => String(pageSize))});
 
 const TracksPage: FC = () => {
 	const {
@@ -42,11 +48,22 @@ const TracksPage: FC = () => {
 	};
 
 	const handlePageSizeChange: OnPageSizeChange = (details): void => {
-		changePageSize(details.pageSize);
+		const pageSize = details.value.length
+			? Number(details.value[0])
+			: undefined;
+
+		if (isNumber(pageSize)) {
+			changePageSize(pageSize);
+		}
 	};
 
 	return (
-		<Flex style={{maxWidth: '800px', margin: '0 auto'}} direction="column" gap="2">
+		<Flex
+			style={{maxWidth: '800px', margin: '0 auto'}}
+			direction="column"
+			gap="2"
+			position="relative"
+		>
 			<ProgressBox isLoading={isPending}>
 				<Table.Root
 					variant="outline"
@@ -145,35 +162,81 @@ const TracksPage: FC = () => {
 				</Table.Root>
 			</ProgressBox>
 
-			<Pagination.Root
-				count={totalTracks}
-				page={activePageNumber}
-				pageSize={activePageSize}
-				onPageChange={handlePageChange}
-				onPageSizeChange={handlePageSizeChange}
+			<Flex
+				rounded="2"
+				alignSelf="center"
+				bg="white"
+				shadow="md"
+				padding="2"
+				alignItems="center"
+				justify="space-between"
+				width="100%"
+				style={{position: 'sticky', bottom: 0}}
 			>
-				<ButtonGroup variant="ghost" size="sm">
-					<Pagination.PrevTrigger asChild={true}>
-						<IconButton>
-							<HiChevronLeft/>
-						</IconButton>
-					</Pagination.PrevTrigger>
+				{totalTracks > activePageSize ? (
+					<Pagination.Root
+						count={totalTracks}
+						page={activePageNumber}
+						pageSize={activePageSize}
+						onPageChange={handlePageChange}
+					>
+						<ButtonGroup variant="ghost" size="md">
+							<Pagination.PrevTrigger asChild={true}>
+								<IconButton>
+									<HiChevronLeft/>
+								</IconButton>
+							</Pagination.PrevTrigger>
 
-					<Pagination.Items
-						render={(page) => (
-							<IconButton variant={{base: 'ghost', _selected: 'outline'}}>
-								{page.value}
-							</IconButton>
-						)}
-					/>
+							<Pagination.Items
+								render={(page) => (
+									<IconButton variant={{base: 'ghost', _selected: 'outline'}}>
+										{page.value}
+									</IconButton>
+								)}
+							/>
 
-					<Pagination.NextTrigger asChild={true}>
-						<IconButton>
-							<HiChevronRight/>
-						</IconButton>
-					</Pagination.NextTrigger>
-				</ButtonGroup>
-			</Pagination.Root>
+							<Pagination.NextTrigger asChild={true}>
+								<IconButton>
+									<HiChevronRight/>
+								</IconButton>
+							</Pagination.NextTrigger>
+						</ButtonGroup>
+					</Pagination.Root>
+				) : null}
+
+				<Select.Root
+					size="md"
+					collection={availablePageSizes}
+					marginLeft="auto"
+					width="30%"
+					value={[String(activePageSize)]}
+					onValueChange={handlePageSizeChange}
+				>
+					<Select.Control>
+						<Select.Trigger>
+							<Select.ValueText placeholder="Select page size"/>
+						</Select.Trigger>
+
+						<Select.IndicatorGroup>
+							<Select.Indicator/>
+						</Select.IndicatorGroup>
+					</Select.Control>
+
+					<Portal>
+						<Select.Positioner>
+							<Select.Content>
+								{availablePageSizes.items.map((pageSize) => (
+									<Select.Item key={pageSize} item={pageSize}>
+										{pageSize}
+
+										<Select.ItemIndicator/>
+									</Select.Item>
+								))}
+							</Select.Content>
+						</Select.Positioner>
+					</Portal>
+				</Select.Root>
+			</Flex>
 		</Flex>
 	);
 };
