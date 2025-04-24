@@ -10,7 +10,12 @@ import {
 	Text,
 } from '@chakra-ui/react';
 
-import {HiChevronLeft, HiChevronRight} from 'react-icons/hi';
+import {
+	HiChevronLeft,
+	HiChevronRight,
+	HiOutlinePencil,
+	HiOutlineTrash,
+} from 'react-icons/hi';
 
 import DefaultTrackCover from '@assets/default-track-cover.png';
 import ProgressBox from '@shared/ui/progress-box';
@@ -68,16 +73,17 @@ const TracksPage: FC = () => {
 				<Table.Root
 					variant="outline"
 					size="md"
-					striped={true}
 					stickyHeader={true}
 					interactive={true}
 				>
 					<Table.ColumnGroup>
-						<Table.Column htmlWidth="40%"/>
+						<Table.Column htmlWidth="35%"/>
 
-						<Table.Column htmlWidth="30%"/>
+						<Table.Column htmlWidth="25%"/>
 
-						<Table.Column htmlWidth="15%"/>
+						<Table.Column htmlWidth="12.5%"/>
+
+						<Table.Column htmlWidth="12.5%"/>
 
 						<Table.Column htmlWidth="15%"/>
 					</Table.ColumnGroup>
@@ -105,6 +111,13 @@ const TracksPage: FC = () => {
 							<Table.ColumnHeader>
 								<Text fontWeight="semibold">
 									Updated at
+								</Text>
+							</Table.ColumnHeader>
+
+
+							<Table.ColumnHeader>
+								<Text fontWeight="semibold">
+									Actions
 								</Text>
 							</Table.ColumnHeader>
 						</Table.Row>
@@ -154,6 +167,18 @@ const TracksPage: FC = () => {
 
 									<Table.Cell>
 										{updatedAt ? new Date(updatedAt).toLocaleDateString() : '-'}
+									</Table.Cell>
+
+									<Table.Cell justifyItems="end">
+										<Flex gap="2">
+											<IconButton variant="outline" colorPalette="yellow">
+												<HiOutlinePencil/>
+											</IconButton>
+
+											<IconButton variant="outline" colorPalette="red">
+												<HiOutlineTrash/>
+											</IconButton>
+										</Flex>
 									</Table.Cell>
 								</Table.Row>
 							);
