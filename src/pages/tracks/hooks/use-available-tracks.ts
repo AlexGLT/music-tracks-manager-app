@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useLayoutEffect, useState} from 'react';
 import axios from 'axios';
 import {z} from 'zod';
 
@@ -18,6 +18,7 @@ const DEFAULT_TOTAL_PAGES = 1;
 type Params = {
 	activePageNumber: number,
 	activePageSize: number,
+	resetPageNumber: () => void,
 };
 
 type ReturnParams = {
@@ -30,6 +31,7 @@ type ReturnParams = {
 export const useAvailableTracks = ({
 	activePageNumber,
 	activePageSize,
+	resetPageNumber,
 }: Params): ReturnParams => {
 	const {abort, createAbortSignal} = useAbortSignal();
 
@@ -38,6 +40,10 @@ export const useAvailableTracks = ({
 
 	const [totalTracks, setTotalTracks] = useState(DEFAULT_TOTAL_TRACKS);
 	const [totalPages, setTotalPages] = useState(DEFAULT_TOTAL_PAGES);
+
+	useLayoutEffect(() => {
+		resetPageNumber();
+	}, [activePageSize, resetPageNumber]);
 
 	useEffect(() => {
 		let isUnmounted = false;

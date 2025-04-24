@@ -24,6 +24,7 @@ const TracksPage: FC = () => {
 		activePageSize,
 		changePageNumber,
 		changePageSize,
+		resetPageNumber,
 	} = usePagination();
 
 	const {
@@ -38,6 +39,7 @@ const TracksPage: FC = () => {
 	} = useAvailableTracks({
 		activePageNumber,
 		activePageSize,
+		resetPageNumber,
 	});
 
 	const {
